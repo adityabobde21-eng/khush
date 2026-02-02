@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Will You Be My Valentine? 💕</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%);
+      font-family: "Segoe UI", system-ui, sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #501b1d;
+      touch-action: none;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      margin-bottom: 2.5rem;
+      color: #c71585;
+      text-shadow: 0 4px 20px rgba(199,21,133,0.4);
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 2.5rem;
+      position: relative;
+    }
+
+    button {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      padding: 1rem 3.5rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+      transition: transform 0.18s ease-out, box-shadow 0.25s ease, opacity 0.4s;
+      will-change: transform, opacity;
+    }
+
+    #yesBtn {
+      background: #ff4d94;
+      color: white;
+      position: relative;
+      z-index: 2;
+    }
+
+    #yesBtn.grow-1 { transform: scale(1.15); box-shadow: 0 14px 40px rgba(255,77,148,0.5); }
+    #yesBtn.grow-2 { transform: scale(1.35); box-shadow: 0 20px 55px rgba(255,77,148,0.6); }
+    #yesBtn.grow-3 { transform: scale(1.65); box-shadow: 0 28px 70px rgba(255,77,148,0.7); }
+    #yesBtn.grow-4 { transform: scale(2.1);  box-shadow: 0 40px 90px rgba(255,77,148,0.85); }
+    #yesBtn.burst  { transform: scale(3.5); opacity: 0; }
+
+    #noBtn {
+      background: #6c757d;
+      color: white;
+    }
+
+    .heart-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 2.2rem;
+      color: #ff3366;
+      will-change: transform, opacity;
+      pointer-events: none;
+      text-shadow: 0 0 12px rgba(255,51,102,0.7);
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-20px); }
+    }
+
+    .popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.62);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+      overflow-y: auto;
+    }
+
+    .popup-content {
+      background: white;
+      padding: 3rem 4rem;
+      border-radius: 32px;
+      text-align: center;
+      max-width: 620px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 70px rgba(199,21,133,0.42);
+      opacity: 0;
+      transform: scale(0.6) translateY(40px);
+      transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .popup.show .popup-content {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .photos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .photo-frame {
+      width: 220px;
+      height: 280px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(199,21,133,0.3);
+      transform: rotate(-3deg);
+      transition: transform 0.4s ease;
+    }
+
+    .photo-frame:nth-child(2) { transform: rotate(4deg); }
+    .photo-frame:nth-child(3) { transform: rotate(-2deg); }
+
+    .photo-frame:hover {
+      transform: scale(1.08) rotate(0deg) !important;
+      box-shadow: 0 20px 60px rgba(199,21,133,0.5);
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .popup h2 {
+      font-size: 3.4rem;
+      color: #c71585;
+      margin-bottom: 1rem;
+    }
+
+    .popup p {
+      font-size: 1.35rem;
+      color: #444;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .close-btn {
+      background: #ff4d94;
+      color: white;
+      border: none;
+      padding: 1rem 2.8rem;
+      font-size: 1.3rem;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      background: #e60073;
+      transform: scale(1.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Will you be my Valentine? 💕</h1>
+
+  <div class="buttons">
+    <button id="yesBtn">Yes 🥰</button>
+    <button id="noBtn">No 😭</button>
+  </div>
+
+  <div class="heart-container" id="hearts"></div>
+
+  <div class="popup" id="lovePopup">
+    <div class="popup-content">
+      <h2>Yayyyy! 💖💖💖</h2>
+      <p>You're officially my Valentine forever!<br>
+         Every moment with you feels like magic.<br>
+         I love you more than words can say 🌹🧸💞</p>
+
+      <div class="photos">
+        <div class="photo-frame">
+          <img src="https://drive.google.com/uc?export=view&id=1bGx1-DnasbCoE57_um6Ec0VB-Om9om5t" alt="Our special moment">
+        </div>
+      </div>
+
+      <button class="close-btn" onclick="document.getElementById('lovePopup').classList.remove('show')">Keep smiling my love 😘</button>
+    </div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const popup = document.getElementById('lovePopup');
+    const heartsContainer = document.getElementById('hearts');
+
+    let targetX = 0, targetY = 0;
+    let currentX = 0, currentY = 0;
+    let raf;
+    let clickCount = 0;
+
+    // No button fleeing logic (unchanged)
+    function updateNoButton() {
+      currentX += (targetX - currentX) * 0.18;
+      currentY += (targetY - currentY) * 0.18;
+      noBtn.style.transform = `translate(${currentX}px, ${currentY}px)`;
+      raf = requestAnimationFrame(updateNoButton);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      if (!raf) raf = requestAnimationFrame(updateNoButton);
+      const rect = noBtn.getBoundingClientRect();
+      const btnX = rect.left + rect.width / 2;
+      const btnY = rect.top + rect.height / 2;
+      const dx = btnX - e.clientX;
+      const dy = btnY - e.clientY;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist < 160) {
+        const force = (160 - dist) / 160;
+        targetX = dx * 1.4 * force;
+        targetY = dy * 1.4 * force;
+      } else {
+        targetX *= 0.72;
+        targetY *= 0.72;
+      }
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 0) return;
+      const touch = e.touches[0];
+      document.dispatchEvent(new MouseEvent('mousemove', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      }));
+    }, { passive: true });
+
+    // Yes button multi-click grow → burst → popup
+    yesBtn.addEventListener('click', () => {
+      clickCount++;
+
+      if (clickCount === 1) {
+        yesBtn.classList.add('grow-1');
+      } else if (clickCount === 2) {
+        yesBtn.classList.add('grow-2');
+      } else if (clickCount === 3) {
+        yesBtn.classList.add('grow-3');
+      } else if (clickCount === 4) {
+        yesBtn.classList.add('grow-4');
+      } else if (clickCount >= 5) {
+        // Burst!
+        yesBtn.classList.add('burst');
+        createExplosionHearts(60);   // big burst of hearts
+
+        setTimeout(() => {
+          popup.style.display = 'flex';
+          setTimeout(() => popup.classList.add('show'), 100);
+          createHearts(100);         // more hearts when popup opens
+        }, 600); // wait for burst animation to finish
+      }
+    });
+
+    function createHearts(count) {
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.className = 'heart';
+          heart.innerHTML = ['❤️','💖','💕','💗','💞','💘'][Math.floor(Math.random()*6)];
+
+          const size = 1.2 + Math.random() * 2.8;
+          heart.style.fontSize = size + 'rem';
+          heart.style.left = (Math.random() * 110 - 5) + 'vw';
+          heart.style.top = '-15vh';
+
+          const duration = 4 + Math.random() * 7;
+          const rotation = (Math.random() - 0.5) * 1440;
+
+          heart.style.transform = `rotate(${rotation}deg) scale(0.4)`;
+          heart.style.transition = `all ${duration}s cubic-bezier(0.22,0.61,0.36,1)`;
+
+          heartsContainer.appendChild(heart);
+
+          requestAnimationFrame(() => {
+            heart.style.transform = `translateY(120vh) rotate(${rotation + 1440}deg) scale(0.9)`;
+            heart.style.opacity = '0';
+          });
+
+          setTimeout(() => heart.remove(), duration * 1000 + 2000);
+        }, i * 20);
+      }
+    }
+
+    function createExplosionHearts(count) {
+      const rect = yesBtn.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      for (let i = 0; i < count; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.innerHTML = ['❤️','💖','💕','💗','💞','💘'][Math.floor(Math.random()*6)];
+
+        const size = 1.5 + Math.random() * 3;
+        heart.style.fontSize = size + 'rem';
+        heart.style.left = centerX + 'px';
+        heart.style.top = centerY + 'px';
+        heart.style.position = 'fixed';
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 80 + Math.random() * 220;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+
+        heart.style.transition = 'all 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
+        heartsContainer.appendChild(heart);
+
+        requestAnimationFrame(() => {
+          heart.style.transform = `translate(${tx}px, ${ty}px) rotate(${Math.random()*1440 - 720}deg) scale(0.2)`;
+          heart.style.opacity = '0';
+        });
+
+        setTimeout(() => heart.remove(), 1400);
+      }
+    }
+
+    // Gentle background hearts
+    setInterval(() => createHearts(8), 5000);
+  </script>
+
+</body>
+</html>
